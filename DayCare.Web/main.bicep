@@ -120,3 +120,12 @@ resource containerapps_resource 'Microsoft.App/containerapps@2023-05-02-preview'
     }
   }
 }
+
+resource databaseAccessRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(container_app_name, 'DatabaseAccessContributorRoleAssignment')
+  scope: sql_server_resource
+  properties: {
+    principalId: containerapps_resource.identity.principalId
+    roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+}
