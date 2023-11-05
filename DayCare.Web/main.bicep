@@ -58,7 +58,7 @@ resource containerapps_resource 'Microsoft.App/containerapps@2023-05-02-preview'
   name: container_app_name
   location: location
   identity: {
-    type: 'None'
+    type: 'SystemAssigned'
   }
   properties: {
     managedEnvironmentId: managedEnvironments_resource.id
