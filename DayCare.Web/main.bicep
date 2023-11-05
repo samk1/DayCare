@@ -19,7 +19,7 @@ resource sql_server_resource 'Microsoft.Sql/servers@2021-02-01-preview' = {
   properties: {
     administratorLogin: 'daycare20231105104246'
     administratorLoginPassword: database_password
-    version: '16.0'
+    version: '12.0'
   }
 }
 
