@@ -73,7 +73,7 @@ resource containerapps_resource 'Microsoft.App/containerapps@2023-05-02-preview'
     template: {
       containers: [
         {
-          image: 'daycare20231105104604.azurecr.io/daycare.web:latest'
+          image: container_app_image
           name: 'daycare'
           resources: {
             cpu: json('0.5')
