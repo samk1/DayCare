@@ -101,6 +101,12 @@ resource containerapps_resource 'Microsoft.App/containerapps@2023-05-02-preview'
             cpu: json('0.5')
             memory: '1Gi'
           }
+          env: [ 
+            {
+              name: 'ConnectionStrings__DefaultConnection'
+              value: 'Server=tcp:daycare20231105104246.database.windows.net,1433;Initial Catalog=daycare20231105104246;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication="Active Directory Default";'
+            }
+          ]
         }
       ]
       scale: {
