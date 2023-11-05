@@ -34,7 +34,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
       {
         name: guid(container_app_name, 'AppSubnet')
         properties: {
-          addressPrefix: '10.0.2.0/24'
+          addressPrefix: '10.0.2.0/23'
           privateEndpointNetworkPolicies: 'Disabled'
           delegations: [
             {
