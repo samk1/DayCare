@@ -2,6 +2,7 @@
 param location string = 'Australia East'
 
 param container_app_name string = 'daycare20231105104246'
+param container_app_image string = 'daycare20231105104604.azurecr.io/daycare.web:latest'
 
 @secure()
 param container_registry_password string
