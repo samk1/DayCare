@@ -47,7 +47,7 @@ resource containerapps_resource 'Microsoft.App/containerapps@2023-05-02-preview'
           value: container_registry_password
         }
       ]
-      activeRevisionsMode: 'Single'
+      activeRevisionsMode: 'Multiple'
       ingress: {
         external: true
         targetPort: 80
