@@ -14,34 +14,6 @@ param container_registry_username string
 param database_password string
 
 
-resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
-  name: container_app_name
-  location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        '10.0.0.0/16'
-      ]
-    }
-    subnets: [
-      {
-        name: guid(container_app_name, 'DatabaseSubnet')
-        properties: {
-          addressPrefix: '10.0.1.0/24'
-          privateEndpointNetworkPolicies: 'Disabled'
-        }
-      }
-      {
-        name: guid(container_app_name, 'AppSubnet')
-        properties: {
-          addressPrefix: '10.0.2.0/23'
-          privateEndpointNetworkPolicies: 'Disabled'
-        }
-      }
-    ]
-  }
-}
-
 resource sql_server_resource 'Microsoft.Sql/servers@2021-02-01-preview' = {
   name: container_app_name
   location: location
@@ -61,27 +33,6 @@ resource sql_database_resource 'Microsoft.Sql/servers/databases@2021-02-01-previ
   }
 }
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  name: guid(container_app_name, 'DatabasePrivateEndpoint')
-  location: location
-  properties: {
-    subnet: {
-      id: vnet.properties.subnets[0].id
-    }
-    privateLinkServiceConnections: [
-      {
-        name: 'plsConnection'
-        properties: {
-          privateLinkServiceId: sql_server_resource.id
-          groupIds: [
-            'sqlServer'
-          ]
-        }
-      }
-    ]
-  }
-}
-
 resource managedEnvironments_resource 'Microsoft.App/managedEnvironments@2023-05-02-preview' = {
   name: container_app_name
   location: location
@@ -96,9 +47,6 @@ resource managedEnvironments_resource 'Microsoft.App/managedEnvironments@2023-05
     kedaConfiguration: {}
     daprConfiguration: {}
     customDomainConfiguration: {}
-    vnetConfiguration: {
-      infrastructureSubnetId: vnet.properties.subnets[1].id
-    }
     peerAuthentication: {
       mtls: {
         enabled: false
@@ -186,5 +134,14 @@ resource databaseAccessRoleAssignment 'Microsoft.Authorization/roleAssignments@2
     principalId: containerapps_resource.identity.principalId
     roleDefinitionId: sqlDbContributorRoleDefinition.id
     principalType: 'ServicePrincipal'
+  }
+}
+
+resource sqlServerFirewallRule 'Microsoft.Sql/servers/firewallRules@2021-02-01-preview' = {
+  parent: sql_server_resource
+  name: 'AllowAzureServicesAndResourcesToAccessThisServer'
+  properties: {
+    startIpAddress: '0.0.0.0'
+    endIpAddress: '0.0.0.0'
   }
 }
