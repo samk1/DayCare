@@ -10,6 +10,28 @@ param container_registry_password string
 @secure()
 param container_registry_username string
 
+@secure()
+param database_password string
+
+resource sql_server_resource 'Microsoft.Sql/servers@2021-02-01-preview' = {
+  name: container_app_name
+  location: location
+  properties: {
+    administratorLogin: 'daycare20231105104246'
+    administratorLoginPassword: database_password
+    version: '16.0'
+  }
+}
+
+resource sql_database_resource 'Microsoft.Sql/servers/databases@2021-02-01-preview' = {
+  name: container_app_name
+  parent: sql_server_resource
+  location: location
+  properties: {
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+  }
+}
+
 resource managedEnvironments_resource 'Microsoft.App/managedEnvironments@2023-05-02-preview' = {
   name: container_app_name
   location: location

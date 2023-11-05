@@ -49,6 +49,6 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ env.CONTAINER_APP_RESOURCE_GROUP_NAME }}
-        template: DayCare.Azure/main.bicep
-        parameters: 'container_app_name=${{ env.CONTAINER_APP_NAME }} location=australiaeast container_registry_password=${{ secrets.daycare20231105104604_PASSWORD_A490 }} container_registry_username=${{ secrets.daycare20231105104604_USERNAME_A490 }} container_app_image=${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:${{ github.sha }}'
+        template: DayCare.Web/main.bicep
+        parameters: 'container_app_name=${{ env.CONTAINER_APP_NAME }} location=australiaeast container_registry_password=${{ secrets.daycare20231105104604_PASSWORD_A490 }} container_registry_username=${{ secrets.daycare20231105104604_USERNAME_A490 }} container_app_image=${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:${{ github.sha }} database_password=${{ secrets.daycare20231105104246_DATABASE_PASSWORD }}'
         failOnStdErr: false
