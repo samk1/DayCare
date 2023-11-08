@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DayCare.Web", "DayCare.Web\
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{4DAB2757-9D22-46A3-8FD7-D953D7005754}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DayCare.Azure", "DayCare.Azure\DayCare.Azure.csproj", "{C9FCEEBD-C35F-48D8-B50E-19E65CEEEC93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4DAB2757-9D22-46A3-8FD7-D953D7005754}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DAB2757-9D22-46A3-8FD7-D953D7005754}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DAB2757-9D22-46A3-8FD7-D953D7005754}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9FCEEBD-C35F-48D8-B50E-19E65CEEEC93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9FCEEBD-C35F-48D8-B50E-19E65CEEEC93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9FCEEBD-C35F-48D8-B50E-19E65CEEEC93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9FCEEBD-C35F-48D8-B50E-19E65CEEEC93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

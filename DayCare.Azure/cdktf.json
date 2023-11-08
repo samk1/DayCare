@@ -1,0 +1,11 @@
+{
+  "language": "csharp",
+  "app": "dotnet run -p DayCare.Azure.csproj",
+  "projectId": "4bbabfc4-709f-4c91-ba67-a82b73b60df0",
+  "sendCrashReports": "true",
+  "terraformProviders": [],
+  "terraformModules": [],
+  "context": {
+
+  }
+}
