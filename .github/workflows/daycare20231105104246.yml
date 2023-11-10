@@ -3,12 +3,8 @@ on:
     branches:
     - master
 env:
-  CONTAINER_REGISTRY_LOGIN_SERVER: daycare20231105104604.azurecr.io
+  CONTAINER_REGISTRY_LOGIN_SERVER: daycarecontainerregistry202311101331.azurecr.io
   PROJECT_NAME_FOR_DOCKER: daycare.web
-  CONTAINER_APP_NAME: daycare20231105104246
-  CONTAINER_APP_RESOURCE_GROUP_NAME: daycare20231105104246ResourceGroup
-  CONTAINER_APP_CONTAINER_NAME: daycare
-  AZURE_SUBSCRIPTION: 1ec0e96a-163c-4792-88f4-dc349c75bdbf
 jobs:
   buildImage:
     runs-on: ubuntu-latest
@@ -29,26 +25,3 @@ jobs:
         push: true
         tags: ${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:${{ github.sha }} , ${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:latest 
         file: DayCare.Web/Dockerfile
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs:
-    - buildImage
-    steps:
-      # Checkout code
-    - uses: actions/checkout@main
-
-    - name: Azure login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.daycare20231105104246_DEPLOY_SPN }}
-
-      # Deploy Bicep file
-    - name: deploy
-      uses: azure/arm-deploy@v1
-      with:
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ env.CONTAINER_APP_RESOURCE_GROUP_NAME }}
-        template: DayCare.Web/main.bicep
-        parameters: DayCare.Web/main.bicepparam container_app_image=${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:${{ github.sha }}
-        failOnStdErr: false
