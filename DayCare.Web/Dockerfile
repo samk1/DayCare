@@ -6,6 +6,8 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
 WORKDIR /src
 COPY ["DayCare.Web/DayCare.Web.csproj", "DayCare.Web/"]
 RUN dotnet restore "DayCare.Web/DayCare.Web.csproj"
@@ -15,6 +17,7 @@ RUN dotnet build "DayCare.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "DayCare.Web.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet ef migrations bundle -o /app/publish/Migrations --self-contained
 
 FROM base AS final
 WORKDIR /app
