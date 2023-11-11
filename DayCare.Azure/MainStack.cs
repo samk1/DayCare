@@ -51,7 +51,8 @@ namespace DayCare.Azure
                 managedIdentityName: webapp.ContainerAppName,
                 appName: containerAppName,
                 resourceGroup: resourceGroup,
-                id: "container-app-database-access"
+                id: "container-app-database-access",
+                roles: new[] { "db_datareader", "db_datawriter" }
             );
         }
     }

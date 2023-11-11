@@ -23,7 +23,9 @@ namespace DayCare.Azure.Constructs
             ResourceGroup resourceGroup,
             DataAzurermMssqlServer mssqlServer,
             string managedIdentityName, 
-            string appName) : base(scope, id)
+            string appName,
+            string[] roles
+        ) : base(scope, id)
         {
             var databaseAdmin = new DataAzurermUserAssignedIdentity(this, "database-admin", new DataAzurermUserAssignedIdentityConfig
             {
@@ -40,7 +42,8 @@ namespace DayCare.Azure.Constructs
                 {
                     { "ManagedIdentityName", managedIdentityName },
                     { "ServerName", mssqlServer.FullyQualifiedDomainName },
-                    { "DatabaseName", Database.DatabaseName(appName) }
+                    { "DatabaseName", Database.DatabaseName(appName) },
+                    { "Roles", string.Join(",", roles) }
                 },
                 principalId: databaseAdmin.Id,
                 resourceGroup: resourceGroup

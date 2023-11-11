@@ -38,8 +38,9 @@ namespace DayCare.Azure
                 $"{containerAppName}-migration-database-access", 
                 resourceGroup,
                 mssqlServer,
-                migrationsIdentity.Name, 
-                containerAppName
+                migrationsIdentity.Name,
+                containerAppName,
+                roles: new[] { "db_owner" }
             );
 
             new ContainerGroup(this, $"{containerAppName}-migration-container-group", new ContainerGroupConfig
