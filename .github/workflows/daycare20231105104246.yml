@@ -45,4 +45,5 @@ jobs:
           stackName: daycareStack
           terraformCloudToken: ${{ secrets.TF_API_TOKEN }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
+          commentOnPr: false
           workingDirectory: ./DayCare.Azure
