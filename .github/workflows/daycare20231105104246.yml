@@ -37,12 +37,11 @@ jobs:
       - name: Run Terraform CDK
         uses: hashicorp/terraform-cdk-action@v0.2
         env:
-          CONTAINER_IMAGE_NAME: ${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:${{ github.sha }}
+          CONTAINER_APP_IMAGE: ${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:${{ github.sha }}
         with:
           cdktfVersion: 0.19.1
           terraformVersion: 1.5.2
           mode: auto-approve-apply
           stackName: daycareStack
           terraformCloudToken: ${{ secrets.TF_API_TOKEN }}
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
           workingDirectory: ./DayCare.Azure
