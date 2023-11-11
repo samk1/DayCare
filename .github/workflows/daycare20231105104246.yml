@@ -44,4 +44,5 @@ jobs:
           mode: auto-approve-apply
           stackName: daycareStack
           terraformCloudToken: ${{ secrets.TF_API_TOKEN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
           workingDirectory: ./DayCare.Azure
