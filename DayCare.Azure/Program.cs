@@ -12,30 +12,23 @@ namespace MyCompany.MyApp
         public static void Main(string[] args)
         {
             App app = new App();
-            var context = new AzureContext(app);
             
-            MainStack stack = new MainStack(
-                app,
-                Environment.GetEnvironmentVariable("CONTAINER_APP_IMAGE"),
-                "daycare-web"
+            new InfrastuctureStack(
+                scope: app,
+                containerAppName: "daycare-web"
             );
 
-            new CloudBackend(stack, new CloudBackendConfig { Hostname = "app.terraform.io", Organization = "DayCare", Workspaces = new NamedCloudWorkspace("DayCare") });
-
-            new AzurermProvider(stack, "azurerm", new AzurermProviderConfig
-            {
-                Features = new AzurermProviderFeatures
-                {
-                },
-                SkipProviderRegistration = true,
-                SubscriptionId = context.SubscriptionId,
-                TenantId = context.TenantId,
-            });
-
-            new AzureadProvider(stack, "azuread", new AzureadProviderConfig
-            {
-                TenantId = context.TenantId,
-            });
+            new MigrationStack(
+                scope: app,
+                containerImage: Environment.GetEnvironmentVariable("CONTAINER_APP_IMAGE"),
+                containerAppName: "daycare-web"
+            );
+            
+            new MainStack(
+                scope: app,
+                containerImage: Environment.GetEnvironmentVariable("CONTAINER_APP_IMAGE"),
+                containerAppName: "daycare-web"
+            );
 
             app.Synth();
             Console.WriteLine("App synth complete");

@@ -10,9 +10,9 @@ namespace DayCare.Azure.Model
         public string SubscriptionId => Get("subscriptionId");
         public string TenantId => Get("tenantId");
 
-        public AzureContext(App app)
+        public AzureContext(Construct scope)
         {
-            Node = app.Node;
+            Node = scope.Node;
         }
 
         private string Get(string key)

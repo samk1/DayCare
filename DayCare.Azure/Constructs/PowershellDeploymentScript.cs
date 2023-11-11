@@ -1,11 +1,14 @@
 ﻿using Constructs;
+using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Azurerm.ResourceDeploymentScriptAzurePowerShell;
 using System.Collections.Generic;
 
 namespace DayCare.Azure.Constructs
 {
-    internal class PowershellDeploymentScript : Construct
+    internal class PowershellDeploymentScript : Construct, ITerraformDependable
     {
+        private ResourceDeploymentScriptAzurePowerShell resourceDeploymentScriptAzurePowerShell;
+
         public PowershellDeploymentScript(
             Construct scope, 
             string name, 
@@ -21,7 +24,7 @@ namespace DayCare.Azure.Constructs
                 arguments.Add($"-{parameter.Key} '{parameter.Value}'");
             }
 
-            new ResourceDeploymentScriptAzurePowerShell(
+            resourceDeploymentScriptAzurePowerShell = new ResourceDeploymentScriptAzurePowerShell(
                 this,
                 $"{name}-deployment-script-resource",
                 new ResourceDeploymentScriptAzurePowerShellConfig
@@ -43,5 +46,7 @@ namespace DayCare.Azure.Constructs
                 }
             );
         }
+
+        public string Fqn => resourceDeploymentScriptAzurePowerShell.Fqn;
     }
 }

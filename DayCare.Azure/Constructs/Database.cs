@@ -11,18 +11,19 @@ namespace DayCare.Azure.Constructs
 {
     internal class Database : Construct
     {
+        public static string ServerName(string appName) => $"{appName}-sql-server";
+        public static string DatabaseName(string appName) => $"{appName}-database";
+        public static string AdminIdentityName(string appName) => $"{appName}-sql-server-admin";
+
+        public static string ConnectionString(string serverName, string databaseName)
+        {
+            return $"Server=tcp:{serverName},1433;Initial Catalog={databaseName};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=\"Active Directory Default\";";
+        }
+
         private MssqlServer MssqlServer;
         private MssqlDatabase MssqlDatabase;
         private UserAssignedIdentity AdminIdentity;
         private ResourceGroup ResourceGroup;
-
-        public string ConnectionString
-        {
-            get
-            {
-                return $"Server=tcp:{MssqlServer.FullyQualifiedDomainName},1433;Initial Catalog={MssqlDatabase.Name};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=\"Active Directory Default\";";
-            }
-        }
 
         public Database(
             Construct scope, 
@@ -38,12 +39,12 @@ namespace DayCare.Azure.Constructs
             {
                 Location = resourceGroup.Location,
                 ResourceGroupName = resourceGroup.Name,
-                Name = $"sql-server-entra-admin",
+                Name = AdminIdentityName(appName),
             });
 
             MssqlServer = new MssqlServer(this, "sql-server", new MssqlServerConfig
             {
-                Name = $"{appName}-sql-server",
+                Name = ServerName(appName),
                 ResourceGroupName = resourceGroup.Name,
                 Location = resourceGroup.Location,
                 Version = "12.0",
@@ -69,7 +70,7 @@ namespace DayCare.Azure.Constructs
 
             MssqlDatabase = new MssqlDatabase(this, "sql-database", new MssqlDatabaseConfig
             {
-                Name = $"{appName}-database",
+                Name = DatabaseName(appName),
                 ServerId = MssqlServer.Id,
                 Collation = "SQL_Latin1_General_CP1_CI_AS",
             });
@@ -81,23 +82,6 @@ namespace DayCare.Azure.Constructs
                 StartIpAddress = "0.0.0.0",
                 EndIpAddress = "0.0.0.0"
             });
-        }
-
-        internal void GrantAccess(string managedIdentityName, string constructId)
-        {
-            new PowershellDeploymentScript(
-                this,
-                name: $"{constructId}-create-database-user-script",
-                embeddedResourceName: "DayCare.Azure.Scripts.CreateDatabaseUser.ps1",
-                parameters: new Dictionary<string, string>
-                {
-                    { "ManagedIdentityName", managedIdentityName },
-                    { "ServerName", MssqlServer.FullyQualifiedDomainName },
-                    { "DatabaseName", MssqlDatabase.Name }
-                },
-                principalId: AdminIdentity.Id,
-                resourceGroup: ResourceGroup
-            );
         }
     }
 }

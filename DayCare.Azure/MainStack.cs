@@ -4,50 +4,55 @@ using Constructs;
 using DayCare.Azure.Constructs;
 using DayCare.Azure.Model;
 using HashiCorp.Cdktf;
+using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermMssqlServer;
 
 namespace DayCare.Azure
 {
-    class MainStack : TerraformStack
+    class MainStack : BaseAzureStack
     {
 
         public MainStack(
             Construct scope, 
-            string containerAppImage, 
+            string containerImage, 
             string containerAppName
-        ) : base(scope, "daycareStack")
+        ) : base(scope, "applicationStack", "DayCare-Application")
         {
-            var keyVaultSecrets = new KeyVaultSecrets(
-                scope: this
-            );
-
             var resourceGroup = new ResourceGroup(
                 scope: this
             );
 
-            var database = new Database(
-                scope: this, 
-                keyVaultSecrets: keyVaultSecrets,
-                appName: containerAppName,
-                resourceGroup: resourceGroup,
-                directoryReadersGroupId: (string)scope.Node.TryGetContext("directoryReadersGroupId")
-            );
+            var mssqlServer = new DataAzurermMssqlServer(this, "mssql-server", new DataAzurermMssqlServerConfig
+            {
+                Name = Database.ServerName(containerAppName),
+                ResourceGroupName = resourceGroup.Name,
+            });
 
             var webapp = new WebApp(
                 scope: this,
                 appName: containerAppName,
                 resourceGroup: resourceGroup,
                 spec: new ContainerSpec(
-                    image: containerAppImage,
+                    image: containerImage,
                     containerRegistry: new ContainerRegistry(this),
                     environmentVariables: new Dictionary<string, string>
                     {
-                        { "ConnectionStrings__DefaultConnection", database.ConnectionString },
+                        { 
+                            "ConnectionStrings__DefaultConnection", 
+                            Database.ConnectionString(mssqlServer.FullyQualifiedDomainName, Database.DatabaseName(containerAppName)) 
+                        },
                         { "ASPNETCORE_ENVIRONMENT", "Development" },
                     }
                 )
             );
 
-            database.GrantAccess(webapp.ContainerAppName, "container-app-database-access");
+            new DatabaseAccess(
+                scope: this,
+                mssqlServer: mssqlServer,
+                managedIdentityName: webapp.ContainerAppName,
+                appName: containerAppName,
+                resourceGroup: resourceGroup,
+                id: "container-app-database-access"
+            );
         }
     }
 }

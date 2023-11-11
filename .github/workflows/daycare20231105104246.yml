@@ -34,7 +34,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Run Terraform CDK
+      - name: Infrastructure Stack
+        uses: hashicorp/terraform-cdk-action@v0.2
+        env:
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+        with:
+          cdktfVersion: 0.19.1
+          terraformVersion: 1.5.2
+          mode: auto-approve-apply
+          stackName: infrastructureStack
+          terraformCloudToken: ${{ secrets.TF_API_TOKEN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          commentOnPr: false
+          workingDirectory: ./DayCare.Azure
+      - name: Migrations Stack
         uses: hashicorp/terraform-cdk-action@v0.2
         env:
           CONTAINER_APP_IMAGE: ${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:${{ github.sha }}
@@ -43,7 +56,21 @@ jobs:
           cdktfVersion: 0.19.1
           terraformVersion: 1.5.2
           mode: auto-approve-apply
-          stackName: daycareStack
+          stackName: migrationsStack
+          terraformCloudToken: ${{ secrets.TF_API_TOKEN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          commentOnPr: false
+          workingDirectory: ./DayCare.Azure
+      - name: Application Stack
+        uses: hashicorp/terraform-cdk-action@v0.2
+        env:
+          CONTAINER_APP_IMAGE: ${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:${{ github.sha }}
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+        with:
+          cdktfVersion: 0.19.1
+          terraformVersion: 1.5.2
+          mode: auto-approve-apply
+          stackName: applicationStack
           terraformCloudToken: ${{ secrets.TF_API_TOKEN }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           commentOnPr: false
