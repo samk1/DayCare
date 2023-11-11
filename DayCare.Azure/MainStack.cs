@@ -10,7 +10,11 @@ namespace DayCare.Azure
     class MainStack : TerraformStack
     {
 
-        public MainStack(Construct scope, string containerAppImage, string containerAppName) : base(scope, "daycareStack")
+        public MainStack(
+            Construct scope, 
+            string containerAppImage, 
+            string containerAppName
+        ) : base(scope, "daycareStack")
         {
             var keyVaultSecrets = new KeyVaultSecrets(
                 scope: this
@@ -24,7 +28,8 @@ namespace DayCare.Azure
                 scope: this, 
                 keyVaultSecrets: keyVaultSecrets,
                 appName: containerAppName,
-                resourceGroup: resourceGroup
+                resourceGroup: resourceGroup,
+                directoryReadersGroupId: (string)scope.Node.TryGetContext("directoryReadersGroupId")
             );
 
             var webapp = new WebApp(
@@ -42,7 +47,7 @@ namespace DayCare.Azure
                 )
             );
 
-            database.GrantAccess(webapp.ContainerAppName);
+            database.GrantAccess(webapp.ContainerAppName, "container-app-database-access");
         }
     }
 }

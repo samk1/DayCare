@@ -9,9 +9,10 @@
         "resourceGroupName": "daycare202311101327",
         "subscriptionId": "1ec0e96a-163c-4792-88f4-dc349c75bdbf",
         "tenantId": "f9ff6ed3-df95-41ff-8cc7-c4cb05239cf1",
+        "directoryReadersGroupId": "55184ac0-c277-4cd0-8a4a-ef0021003f8a",
         "keyVault": {
             "name": "keyvault202310111329",
-            "resourceGroupName": "daycare202311101327"
+            "resourceGroupName": "daycare-keyvault202310111329"
         },
         "containerRegistry": {
             "name": "daycarecontainerregistry202311101331",

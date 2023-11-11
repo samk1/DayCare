@@ -2,6 +2,7 @@ using System;
 using DayCare.Azure;
 using DayCare.Azure.Model;
 using HashiCorp.Cdktf;
+using HashiCorp.Cdktf.Providers.Azuread.Provider;
 using HashiCorp.Cdktf.Providers.Azurerm.Provider;
 
 namespace MyCompany.MyApp
@@ -24,10 +25,15 @@ namespace MyCompany.MyApp
             new AzurermProvider(stack, "azurerm", new AzurermProviderConfig
             {
                 Features = new AzurermProviderFeatures
-            {
-            },
+                {
+                },
                 SkipProviderRegistration = true,
                 SubscriptionId = context.SubscriptionId,
+                TenantId = context.TenantId,
+            });
+
+            new AzureadProvider(stack, "azuread", new AzureadProviderConfig
+            {
                 TenantId = context.TenantId,
             });
 

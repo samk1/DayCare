@@ -11,7 +11,8 @@ namespace DayCare.Azure.Constructs
             string name, 
             string embeddedResourceName, 
             string principalId,
-            Dictionary<string, string> parameters
+            Dictionary<string, string> parameters,
+            ResourceGroup resourceGroup
         ) : base(scope, $"${name}-deployment-script")
         {
             var arguments = new List<string>();
@@ -25,8 +26,8 @@ namespace DayCare.Azure.Constructs
                 $"{name}-deployment-script-resource",
                 new ResourceDeploymentScriptAzurePowerShellConfig
                 {
-                    Location = (string)scope.Node.TryGetContext("location"),
-                    ResourceGroupName = (string)scope.Node.TryGetContext("resourceGroupName"),
+                    Location = resourceGroup.Location,
+                    ResourceGroupName = resourceGroup.Name,
                     RetentionInterval = "P1D",
                     Version = "9.7",
                     CleanupPreference = "Always",

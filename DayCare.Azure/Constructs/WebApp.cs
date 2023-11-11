@@ -28,7 +28,7 @@ namespace DayCare.Azure.Constructs
                 }
             );
 
-            new ContainerApp(this, $"{appName}-container-app", new ContainerAppConfig
+            ContainerApp = new ContainerApp(this, $"{appName}-container-app", new ContainerAppConfig
             {
                 Name = $"{appName}-container-app",
                 ResourceGroupName = resourceGroup.Name,
@@ -77,7 +77,7 @@ namespace DayCare.Azure.Constructs
                     {
                         new ContainerAppTemplateContainer
                         {
-                            Name = $"${appName}-template",
+                            Name = $"{appName}-template",
                             Image = spec.Image,
                             Cpu = 0.5,
                             Memory = "1Gi",

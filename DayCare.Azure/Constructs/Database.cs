@@ -1,11 +1,10 @@
 ﻿using Constructs;
 using DayCare.Azure.Model;
-using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermRoleDefinition;
 using HashiCorp.Cdktf.Providers.Azurerm.MssqlDatabase;
 using HashiCorp.Cdktf.Providers.Azurerm.MssqlFirewallRule;
 using HashiCorp.Cdktf.Providers.Azurerm.MssqlServer;
-using HashiCorp.Cdktf.Providers.Azurerm.RoleAssignment;
 using HashiCorp.Cdktf.Providers.Azurerm.UserAssignedIdentity;
+using HashiCorp.Cdktf.Providers.Azuread.GroupMember;
 using System.Collections.Generic;
 
 namespace DayCare.Azure.Constructs
@@ -15,6 +14,7 @@ namespace DayCare.Azure.Constructs
         private MssqlServer MssqlServer;
         private MssqlDatabase MssqlDatabase;
         private UserAssignedIdentity AdminIdentity;
+        private ResourceGroup ResourceGroup;
 
         public string ConnectionString
         {
@@ -28,9 +28,12 @@ namespace DayCare.Azure.Constructs
             Construct scope, 
             KeyVaultSecrets keyVaultSecrets,
             string appName,
-            ResourceGroup resourceGroup
+            ResourceGroup resourceGroup,
+            string directoryReadersGroupId
         ) : base(scope, "Database")
         {
+            ResourceGroup = resourceGroup;
+
             AdminIdentity = new UserAssignedIdentity(this, $"sql-server-entra-admin", new UserAssignedIdentityConfig
             {
                 Location = resourceGroup.Location,
@@ -58,6 +61,12 @@ namespace DayCare.Azure.Constructs
                 }
             });
 
+            new GroupMember(this, "sql-server-entra-admin-directory-readers-group-member", new GroupMemberConfig
+            {
+                GroupObjectId = directoryReadersGroupId,
+                MemberObjectId = MssqlServer.Identity.PrincipalId,
+            });
+
             MssqlDatabase = new MssqlDatabase(this, "sql-database", new MssqlDatabaseConfig
             {
                 Name = $"{appName}-database",
@@ -74,11 +83,11 @@ namespace DayCare.Azure.Constructs
             });
         }
 
-        internal void GrantAccess(string managedIdentityName)
+        internal void GrantAccess(string managedIdentityName, string constructId)
         {
             new PowershellDeploymentScript(
                 this,
-                name: $"{managedIdentityName}-create-database-user-script",
+                name: $"{constructId}-create-database-user-script",
                 embeddedResourceName: "DayCare.Azure.Scripts.CreateDatabaseUser.ps1",
                 parameters: new Dictionary<string, string>
                 {
@@ -86,7 +95,8 @@ namespace DayCare.Azure.Constructs
                     { "ServerName", MssqlServer.FullyQualifiedDomainName },
                     { "DatabaseName", MssqlDatabase.Name }
                 },
-                principalId: AdminIdentity.Id
+                principalId: AdminIdentity.Id,
+                resourceGroup: ResourceGroup
             );
         }
     }

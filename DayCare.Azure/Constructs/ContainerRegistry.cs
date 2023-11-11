@@ -1,5 +1,6 @@
 ﻿using Constructs;
 using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermContainerRegistry;
+using System.Collections.Generic;
 
 namespace DayCare.Azure.Constructs
 {
@@ -14,10 +15,12 @@ namespace DayCare.Azure.Constructs
 
         public ContainerRegistry(Construct scope) : base(scope, "container-registry")
         {
+            var containerRegistryContext = (Dictionary<string, object>)scope.Node.TryGetContext("containerRegistry");
+
             DataAzurermContainerRegistry = new DataAzurermContainerRegistry(this, "container-registry", new DataAzurermContainerRegistryConfig
             {
-                Name = (string)scope.Node.TryGetContext("containerRegistry.name"),
-                ResourceGroupName = (string)scope.Node.TryGetContext("containerRegistry.resourceGroupName"),
+                Name = (string)containerRegistryContext["name"],
+                ResourceGroupName = (string)containerRegistryContext["resourceGroupName"],
             });
         }
     }
