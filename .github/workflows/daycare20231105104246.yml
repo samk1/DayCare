@@ -7,6 +7,7 @@ env:
   PROJECT_NAME_FOR_DOCKER: daycare.web
 jobs:
   buildImage:
+    name: "Build and push Docker image to Azure container registry"
     runs-on: ubuntu-latest
     steps:
     - name: Checkout source code
@@ -25,3 +26,23 @@ jobs:
         push: true
         tags: ${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:${{ github.sha }} , ${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:latest 
         file: DayCare.Web/Dockerfile
+
+  terraform:
+    name: "Terraform CDK Deploy"
+    runs-on: ubuntu-latest
+    needs: buildImage
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run Terraform CDK
+        uses: hashicorp/terraform-cdk-action@v0.2
+        env:
+          CONTAINER_IMAGE_NAME: ${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:${{ github.sha }}
+        with:
+          cdktfVersion: 0.19.1
+          terraformVersion: 1.5.2
+          mode: auto-approve-apply
+          stackName: daycareStack
+          terraformCloudToken: ${{ secrets.TF_API_TOKEN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          workingDirectory: ./DayCare.Azure
