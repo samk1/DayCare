@@ -7,28 +7,31 @@ namespace DayCare.Azure.Constructs
 {
     internal class WebApp : Construct
     {
+        private ContainerApp ContainerApp;
+        public string ContainerAppName => ContainerApp.Name;
+
         public WebApp(
-            Construct scope, 
-            AzureContext azureContext,
-            KeyVaultSecrets keyVaultSecrets,
-            ContainerSpec spec
-        ) : base(scope, $"{azureContext.AppName}-webapp")
+            Construct scope,
+            ResourceGroup resourceGroup,
+            ContainerSpec spec,
+            string appName
+        ) : base(scope, $"{appName}-webapp")
         {
             var containerAppEnvironment = new ContainerAppEnvironment(
                 this, 
-                $"{azureContext.AppName}-container-app-environment", 
+                $"{appName}-container-app-environment", 
                 new ContainerAppEnvironmentConfig
                 {
-                    Name = $"{azureContext.AppName}-container-app-environment",
-                    ResourceGroupName = azureContext.ResourceGroupName,
-                    Location = azureContext.Location,
+                    Name = $"{appName}-container-app-environment",
+                    ResourceGroupName = resourceGroup.Name,
+                    Location = resourceGroup.Location,
                 }
             );
 
-            new ContainerApp(this, $"{azureContext.AppName}-container-app", new ContainerAppConfig
+            new ContainerApp(this, $"{appName}-container-app", new ContainerAppConfig
             {
-                Name = azureContext.AppName,
-                ResourceGroupName = azureContext.ResourceGroupName,
+                Name = $"{appName}-container-app",
+                ResourceGroupName = resourceGroup.Name,
                 ContainerAppEnvironmentId = containerAppEnvironment.Id,
                 RevisionMode = "Multiple",
                 Identity = new ContainerAppIdentity
@@ -40,7 +43,7 @@ namespace DayCare.Azure.Constructs
                     new ContainerAppSecret
                     {
                         Name = "container-registry-password",
-                        Value = keyVaultSecrets.GetSecret("container-registry-password"),
+                        Value = spec.ContainerRegistryPassword,
                     }
                 },
                 Ingress = new ContainerAppIngress
@@ -62,8 +65,8 @@ namespace DayCare.Azure.Constructs
                 {
                     new ContainerAppRegistry
                     {
-                        Server = azureContext.ContainerRegistryServer,
-                        Username = keyVaultSecrets.GetSecret("container-registry-username"),
+                        Server = spec.ContainerRegistryServer,
+                        Username = spec.ContainerRegistryUsername,
                         PasswordSecretName = "container-registry-password",
                     },
                 },
@@ -74,7 +77,7 @@ namespace DayCare.Azure.Constructs
                     {
                         new ContainerAppTemplateContainer
                         {
-                            Name = $"${azureContext.AppName}-template",
+                            Name = $"${appName}-template",
                             Image = spec.Image,
                             Cpu = 0.5,
                             Memory = "1Gi",

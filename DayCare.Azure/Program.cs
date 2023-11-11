@@ -16,7 +16,7 @@ namespace MyCompany.MyApp
             MainStack stack = new MainStack(
                 app,
                 Environment.GetEnvironmentVariable("CONTAINER_APP_IMAGE"),
-                context
+                "daycare-web"
             );
 
             new CloudBackend(stack, new CloudBackendConfig { Hostname = "app.terraform.io", Organization = "DayCare", Workspaces = new NamedCloudWorkspace("DayCare") });

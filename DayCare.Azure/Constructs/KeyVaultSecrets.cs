@@ -7,14 +7,14 @@ namespace DayCare.Azure.Constructs
 {
   internal class KeyVaultSecrets : Construct
   {
-    private DataAzurermKeyVault KeyVault;
+    private DataAzurermKeyVault DataAzurermKeyVault;
 
-    public KeyVaultSecrets(Construct scope, AzureContext azureContext) : base(scope, "keyvault-secrets")
+    public KeyVaultSecrets(Construct scope) : base(scope, "keyvault-secrets")
     {
-      KeyVault = new DataAzurermKeyVault(this, "keyvault", new DataAzurermKeyVaultConfig
+      DataAzurermKeyVault = new DataAzurermKeyVault(this, "keyvault", new DataAzurermKeyVaultConfig
       {
-        Name = azureContext.KeyVaultName,
-        ResourceGroupName = azureContext.ResourceGroupName,
+        Name = (string)scope.Node.TryGetContext("keyVault.name"),
+        ResourceGroupName = (string)scope.Node.TryGetContext("keyVaault.ResourceGroupName"),
       });
     }
 
@@ -23,7 +23,7 @@ namespace DayCare.Azure.Constructs
       var secret = new DataAzurermKeyVaultSecret(this, secretName, new DataAzurermKeyVaultSecretConfig
       {
         Name = secretName,
-        KeyVaultId = KeyVault.Id,
+        KeyVaultId = DataAzurermKeyVault.Id,
       });
 
       return secret.Value;

@@ -26,22 +26,23 @@ namespace DayCare.Azure.Constructs
 
         public Database(
             Construct scope, 
-            KeyVaultSecrets keyVaultSecrets, 
-            AzureContext azureContext
+            KeyVaultSecrets keyVaultSecrets,
+            string appName,
+            ResourceGroup resourceGroup
         ) : base(scope, "Database")
         {
             AdminIdentity = new UserAssignedIdentity(this, $"sql-server-entra-admin", new UserAssignedIdentityConfig
             {
-                Location = azureContext.Location,
-                ResourceGroupName = azureContext.ResourceGroupName,
+                Location = resourceGroup.Location,
+                ResourceGroupName = resourceGroup.Name,
                 Name = $"sql-server-entra-admin",
             });
 
             MssqlServer = new MssqlServer(this, "sql-server", new MssqlServerConfig
             {
-                Name = $"{azureContext.AppName}-sql-server",
-                ResourceGroupName = azureContext.ResourceGroupName,
-                Location = azureContext.Location,
+                Name = $"{appName}-sql-server",
+                ResourceGroupName = resourceGroup.Name,
+                Location = resourceGroup.Location,
                 Version = "12.0",
                 AdministratorLogin = "sqladmin",
                 AdministratorLoginPassword = keyVaultSecrets.GetSecret("database-password"),
@@ -59,7 +60,7 @@ namespace DayCare.Azure.Constructs
 
             MssqlDatabase = new MssqlDatabase(this, "sql-database", new MssqlDatabaseConfig
             {
-                Name = $"{azureContext.AppName}-database",
+                Name = $"{appName}-database",
                 ServerId = MssqlServer.Id,
                 Collation = "SQL_Latin1_General_CP1_CI_AS",
             });

@@ -7,11 +7,15 @@
     "terraformModules": [],
     "context": {
         "resourceGroupName": "daycare202311101327",
-        "location": "australiaeast",
-        "appName": "daycare-web",
-        "containerRegistryServer": "daycarecontainerregistry202311101331.azurecr.io",
         "subscriptionId": "1ec0e96a-163c-4792-88f4-dc349c75bdbf",
         "tenantId": "f9ff6ed3-df95-41ff-8cc7-c4cb05239cf1",
-        "keyVaultName": "keyvault202310111329"
+        "keyVault": {
+            "name": "keyvault202310111329",
+            "resourceGroupName": "daycare202311101327"
+        },
+        "containerRegistry": {
+            "name": "daycarecontainerregistry202311101331",
+            "resourceGroupName": "daycare-containerregistry202311101331"
+        }
     }
 }

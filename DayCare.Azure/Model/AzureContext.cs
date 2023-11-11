@@ -8,11 +8,6 @@ namespace DayCare.Azure.Model
         private Node Node;
 
         public string SubscriptionId => Get("subscriptionId");
-        public string Location => Get("location");
-        public string ResourceGroupName => Get("resourceGroupName");
-        public string AppName => Get("appName");
-        public string ContainerRegistryServer => Get("containerRegistryServer");
-        public string KeyVaultName => Get("keyVaultName");
         public string TenantId => Get("tenantId");
 
         public AzureContext(App app)
