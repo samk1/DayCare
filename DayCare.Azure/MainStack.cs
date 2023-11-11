@@ -12,7 +12,10 @@ namespace DayCare.Azure
 
         public MainStack(Construct scope, string containerAppImage, AzureContext context) : base(scope, "daycareStack")
         {
-            var keyVaultSecrets = new KeyVaultSecrets(this);
+            var keyVaultSecrets = new KeyVaultSecrets(
+                scope: this,
+                azureContext: context
+            );
 
             var database = new Database(
                 scope: this, 

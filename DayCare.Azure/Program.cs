@@ -27,8 +27,8 @@ namespace MyCompany.MyApp
             {
             },
                 SkipProviderRegistration = true,
-                SubscriptionId = (string)stack.Node.TryGetContext("subscriptionId"),
-                TenantId = (string)stack.Node.TryGetContext("tenantId"),
+                SubscriptionId = context.SubscriptionId,
+                TenantId = context.TenantId,
             });
 
             app.Synth();

@@ -25,4 +25,6 @@
     </PackageReference>
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties cdktf_1json__JsonSchema="cd" /></VisualStudio></ProjectExtensions>
+
 </Project>

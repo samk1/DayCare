@@ -1,4 +1,5 @@
 ﻿using Constructs;
+using DayCare.Azure.Model;
 using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermKeyVault;
 using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermKeyVaultSecret;
 
@@ -8,12 +9,12 @@ namespace DayCare.Azure.Constructs
   {
     private DataAzurermKeyVault KeyVault;
 
-    public KeyVaultSecrets(Construct scope) : base(scope, "keyvault-secrets")
+    public KeyVaultSecrets(Construct scope, AzureContext azureContext) : base(scope, "keyvault-secrets")
     {
       KeyVault = new DataAzurermKeyVault(this, "keyvault", new DataAzurermKeyVaultConfig
       {
-        Name = "keyvault202310111329",
-        ResourceGroupName = "daycare-keyvault202310111329",
+        Name = azureContext.KeyVaultName,
+        ResourceGroupName = azureContext.ResourceGroupName,
       });
     }
 
