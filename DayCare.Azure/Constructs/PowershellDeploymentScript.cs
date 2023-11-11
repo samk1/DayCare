@@ -9,6 +9,8 @@ namespace DayCare.Azure.Constructs
     {
         private ResourceDeploymentScriptAzurePowerShell resourceDeploymentScriptAzurePowerShell;
 
+        public ITerraformDependable Dependable => resourceDeploymentScriptAzurePowerShell;
+
         public PowershellDeploymentScript(
             Construct scope, 
             string name, 

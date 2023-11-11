@@ -1,16 +1,12 @@
 ﻿using Constructs;
-using DayCare.Azure;
 using DayCare.Azure.Constructs;
 using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Azurerm.ContainerGroup;
-using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermContainerGroup;
 using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermMssqlServer;
-using HashiCorp.Cdktf.Providers.Azurerm.MssqlServer;
 using HashiCorp.Cdktf.Providers.Azurerm.UserAssignedIdentity;
-using System;
 using System.Collections.Generic;
 
-namespace MyCompany.MyApp
+namespace DayCare.Azure
 {
     internal class MigrationStack : BaseAzureStack
     {
@@ -53,8 +49,8 @@ namespace MyCompany.MyApp
                 Location = resourceGroup.Location,
                 RestartPolicy = "Never",
                 OsType = "Linux",
-                IpAddressType = "Public",
-                DependsOn = new [] { databaseAccess },
+                IpAddressType = "None",
+                DependsOn = new [] { databaseAccess.Dependable },
                 Identity = new ContainerGroupIdentity
                 {
                     Type = "UserAssigned",
@@ -77,7 +73,7 @@ namespace MyCompany.MyApp
                         Image = containerImage,
                         Cpu = 1,
                         Memory = 1,
-                        Commands = new[] { "app/Migrations" },
+                        Commands = new[] { "/app/Migrations" },
                         EnvironmentVariables = new Dictionary<string, string>
                         {
                             {

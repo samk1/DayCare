@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace DayCare.Azure.Constructs
 {
-    internal class DatabaseAccess : Construct, ITerraformDependable
+    internal class DatabaseAccess : Construct
     {
         private PowershellDeploymentScript powershellDeploymentScript;
-        public string Fqn => powershellDeploymentScript.Fqn;
+        public ITerraformDependable Dependable => powershellDeploymentScript.Dependable;
 
         public DatabaseAccess(
             Construct scope, 
