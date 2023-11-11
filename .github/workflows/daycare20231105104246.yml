@@ -38,6 +38,7 @@ jobs:
         uses: hashicorp/terraform-cdk-action@v0.2
         env:
           CONTAINER_APP_IMAGE: ${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.PROJECT_NAME_FOR_DOCKER }}:${{ github.sha }}
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
         with:
           cdktfVersion: 0.19.1
           terraformVersion: 1.5.2
