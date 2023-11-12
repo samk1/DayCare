@@ -3,7 +3,7 @@ using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermKeyVault;
 using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermKeyVaultSecret;
 using System.Collections.Generic;
 
-namespace DayCare.Azure.Constructs
+namespace DayCare.Azure.Constructs.Data
 {
     internal class KeyVaultSecrets : Construct
     {

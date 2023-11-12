@@ -1,12 +1,7 @@
 ﻿using Constructs;
 using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermResourceGroup;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DayCare.Azure.Constructs
+namespace DayCare.Azure.Constructs.Data
 {
     internal class ResourceGroup : Construct
     {

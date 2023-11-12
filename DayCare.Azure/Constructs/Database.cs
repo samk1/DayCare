@@ -1,11 +1,10 @@
 ﻿using Constructs;
-using DayCare.Azure.Model;
 using HashiCorp.Cdktf.Providers.Azurerm.MssqlDatabase;
 using HashiCorp.Cdktf.Providers.Azurerm.MssqlFirewallRule;
 using HashiCorp.Cdktf.Providers.Azurerm.MssqlServer;
 using HashiCorp.Cdktf.Providers.Azurerm.UserAssignedIdentity;
 using HashiCorp.Cdktf.Providers.Azuread.GroupMember;
-using System.Collections.Generic;
+using DayCare.Azure.Constructs.Data;
 
 namespace DayCare.Azure.Constructs
 {

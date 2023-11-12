@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DayCare.Azure
+namespace DayCare.Azure.Stacks
 {
     internal class BaseAzureStack : TerraformStack
     {
@@ -17,11 +17,11 @@ namespace DayCare.Azure
         {
             var context = new AzureContext(scope);
 
-            new CloudBackend(this, new CloudBackendConfig 
-            { 
-                Hostname = "app.terraform.io", 
-                Organization = "DayCare", 
-                Workspaces = new NamedCloudWorkspace(workspace) 
+            new CloudBackend(this, new CloudBackendConfig
+            {
+                Hostname = "app.terraform.io",
+                Organization = "DayCare",
+                Workspaces = new NamedCloudWorkspace(workspace)
             });
 
             new AzurermProvider(this, "azurerm", new AzurermProviderConfig

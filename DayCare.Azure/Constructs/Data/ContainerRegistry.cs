@@ -2,7 +2,7 @@
 using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermContainerRegistry;
 using System.Collections.Generic;
 
-namespace DayCare.Azure.Constructs
+namespace DayCare.Azure.Constructs.Data
 {
     internal class ContainerRegistry : Construct
     {
