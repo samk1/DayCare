@@ -1,35 +1,39 @@
-﻿using DayCare.Azure.Model;
-using HashiCorp.Cdktf.Providers.Azuread.Provider;
-using HashiCorp.Cdktf.Providers.Azurerm.Provider;
-
-namespace DayCare.Azure.Stacks;
-
-internal class BaseAzureStack : TerraformStack
+﻿namespace DayCare.Azure.Stacks
 {
-    public BaseAzureStack(Construct scope, string id, string workspace) : base(scope, id)
+    using DayCare.Azure.Model;
+    using global::Constructs;
+    using HashiCorp.Cdktf;
+    using HashiCorp.Cdktf.Providers.Azuread.Provider;
+    using HashiCorp.Cdktf.Providers.Azurerm.Provider;
+
+    internal class BaseAzureStack : TerraformStack
     {
-        var context = new AzureContext(scope);
-
-        _ = new CloudBackend(this, new CloudBackendConfig
+        public BaseAzureStack(Construct scope, string id, string workspace)
+            : base(scope, id)
         {
-            Hostname = "app.terraform.io",
-            Organization = "DayCare",
-            Workspaces = new NamedCloudWorkspace(workspace)
-        });
+            var context = new AzureContext(scope);
 
-        _ = new AzurermProvider(this, "azurerm", new AzurermProviderConfig
-        {
-            Features = new AzurermProviderFeatures
+            _ = new CloudBackend(this, new CloudBackendConfig
             {
-            },
-            SkipProviderRegistration = true,
-            SubscriptionId = context.SubscriptionId,
-            TenantId = context.TenantId,
-        });
+                Hostname = "app.terraform.io",
+                Organization = "DayCare",
+                Workspaces = new NamedCloudWorkspace(workspace),
+            });
 
-        _ = new AzureadProvider(this, "azuread", new AzureadProviderConfig
-        {
-            TenantId = context.TenantId,
-        });
+            _ = new AzurermProvider(this, "azurerm", new AzurermProviderConfig
+            {
+                Features = new AzurermProviderFeatures
+                {
+                },
+                SkipProviderRegistration = true,
+                SubscriptionId = context.SubscriptionId,
+                TenantId = context.TenantId,
+            });
+
+            _ = new AzureadProvider(this, "azuread", new AzureadProviderConfig
+            {
+                TenantId = context.TenantId,
+            });
+        }
     }
 }

@@ -1,32 +1,31 @@
-using System;
-using DayCare.Azure.Stacks;
-
-namespace DayCare.Azure;
-
-class Program
+namespace DayCare.Azure
 {
-    public static void Main(string[] args)
+    using System;
+    using DayCare.Azure.Stacks;
+    using HashiCorp.Cdktf;
+
+    internal class Program
     {
-        var app = new App();
+        public static void Main(string[] args)
+        {
+            var app = new App();
 
-        _ = new InfrastuctureStack(
-            scope: app,
-            containerAppName: "daycare-web"
-        );
+            _ = new InfrastuctureStack(
+                scope: app,
+                containerAppName: "daycare-web");
 
-        _ = new MigrationStack(
-            scope: app,
-            containerImage: Environment.GetEnvironmentVariable("CONTAINER_APP_IMAGE"),
-            containerAppName: "daycare-web"
-        );
+            _ = new MigrationStack(
+                scope: app,
+                containerImage: Environment.GetEnvironmentVariable("CONTAINER_APP_IMAGE"),
+                containerAppName: "daycare-web");
 
-        _ = new ApplicationStack(
-            scope: app,
-            containerImage: Environment.GetEnvironmentVariable("CONTAINER_APP_IMAGE"),
-            containerAppName: "daycare-web"
-        );
+            _ = new ApplicationStack(
+                scope: app,
+                containerImage: Environment.GetEnvironmentVariable("CONTAINER_APP_IMAGE"),
+                containerAppName: "daycare-web");
 
-        app.Synth();
-        Console.WriteLine("App synth complete");
+            app.Synth();
+            Console.WriteLine("App synth complete");
+        }
     }
 }

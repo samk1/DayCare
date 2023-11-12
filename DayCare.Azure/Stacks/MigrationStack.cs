@@ -1,87 +1,89 @@
-﻿using DayCare.Azure.Constructs;
-using DayCare.Azure.Constructs.Data;
-using HashiCorp.Cdktf.Providers.Azurerm.ContainerGroup;
-using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermMssqlServer;
-using HashiCorp.Cdktf.Providers.Azurerm.UserAssignedIdentity;
-
-namespace DayCare.Azure.Stacks;
-
-internal class MigrationStack : BaseAzureStack
+﻿namespace DayCare.Azure.Stacks
 {
-    public MigrationStack(
-        Construct scope, 
-        string containerAppName, 
-        string containerImage
-    ) : base(scope, "migrationsStack", "DayCare-Migrations")
+    using System.Collections.Generic;
+    using DayCare.Azure.Constructs;
+    using DayCare.Azure.Constructs.Data;
+    using global::Constructs;
+    using HashiCorp.Cdktf.Providers.Azurerm.ContainerGroup;
+    using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermMssqlServer;
+    using HashiCorp.Cdktf.Providers.Azurerm.UserAssignedIdentity;
+
+    internal class MigrationStack : BaseAzureStack
     {
-        var resourceGroup = new ResourceGroup(this);
-
-        var containerRegistry = new ContainerRegistry(this);
-
-        var mssqlServer = new DataAzurermMssqlServer(this, "mssql-server", new DataAzurermMssqlServerConfig
+        public MigrationStack(
+            Construct scope,
+            string containerAppName,
+            string containerImage)
+            : base(scope, "migrationsStack", "DayCare-Migrations")
         {
-            Name = Database.ServerName(containerAppName),
-            ResourceGroupName = resourceGroup.Name,
-        });
+            var resourceGroup = new ResourceGroup(this);
 
-        var migrationsIdentity = new UserAssignedIdentity(this, $"{containerAppName}-migration-identity", new UserAssignedIdentityConfig
-        {
-            ResourceGroupName = resourceGroup.Name,
-            Location = resourceGroup.Location,
-            Name = $"{containerAppName}-migration-identity"
-        });
+            var containerRegistry = new ContainerRegistry(this);
 
-        var databaseAccess = new DatabaseAccess(
-            this, 
-            $"{containerAppName}-migration-database-access", 
-            resourceGroup,
-            mssqlServer,
-            migrationsIdentity.Name,
-            containerAppName,
-            roles: new[] { "db_owner" }
-        );
-
-        _ = new ContainerGroup(this, $"{containerAppName}-migration-container-group", new ContainerGroupConfig
-        {
-            Name = $"{containerAppName}-database-migrations-container-group",
-            ResourceGroupName = resourceGroup.Name,
-            Location = resourceGroup.Location,
-            RestartPolicy = "Never",
-            OsType = "Linux",
-            IpAddressType = "None",
-            DependsOn = new[] { databaseAccess.Dependable },
-            Identity = new ContainerGroupIdentity
+            var mssqlServer = new DataAzurermMssqlServer(this, "mssql-server", new DataAzurermMssqlServerConfig
             {
-                Type = "UserAssigned",
-                IdentityIds = new[] { migrationsIdentity.Id }
-            },
-            ImageRegistryCredential = new[]
+                Name = Database.ServerName(containerAppName),
+                ResourceGroupName = resourceGroup.Name,
+            });
+
+            var migrationsIdentity = new UserAssignedIdentity(this, $"{containerAppName}-migration-identity", new UserAssignedIdentityConfig
             {
-                new ContainerGroupImageRegistryCredential
+                ResourceGroupName = resourceGroup.Name,
+                Location = resourceGroup.Location,
+                Name = $"{containerAppName}-migration-identity",
+            });
+
+            var databaseAccess = new DatabaseAccess(
+                this,
+                $"{containerAppName}-migration-database-access",
+                resourceGroup,
+                mssqlServer,
+                migrationsIdentity.Name,
+                containerAppName,
+                roles: new[] { "db_owner" });
+
+            _ = new ContainerGroup(this, $"{containerAppName}-migration-container-group", new ContainerGroupConfig
+            {
+                Name = $"{containerAppName}-database-migrations-container-group",
+                ResourceGroupName = resourceGroup.Name,
+                Location = resourceGroup.Location,
+                RestartPolicy = "Never",
+                OsType = "Linux",
+                IpAddressType = "None",
+                DependsOn = new[] { databaseAccess.Dependable },
+                Identity = new ContainerGroupIdentity
                 {
-                    Server = containerRegistry.LoginServer,
-                    Username = containerRegistry.AdminUsername,
-                    Password = containerRegistry.AdminPassword
-                }
-            },
-            Container = new[]
-            {
-                new ContainerGroupContainer()
+                    Type = "UserAssigned",
+                    IdentityIds = new[] { migrationsIdentity.Id },
+                },
+                ImageRegistryCredential = new[]
                 {
-                    Name = $"{containerAppName}-database-migrations-container",
-                    Image = containerImage,
-                    Cpu = 1,
-                    Memory = 1,
-                    Commands = new[] { "/app/Migrations" },
-                    EnvironmentVariables = new Dictionary<string, string>
+                    new ContainerGroupImageRegistryCredential
                     {
+                        Server = containerRegistry.LoginServer,
+                        Username = containerRegistry.AdminUsername,
+                        Password = containerRegistry.AdminPassword,
+                    },
+                },
+                Container = new[]
+                {
+                    new ContainerGroupContainer()
+                    {
+                        Name = $"{containerAppName}-database-migrations-container",
+                        Image = containerImage,
+                        Cpu = 1,
+                        Memory = 1,
+                        Commands = new[] { "/app/Migrations" },
+                        EnvironmentVariables = new Dictionary<string, string>
                         {
-                            "ConnectionStrings__DefaultConnection",
-                            Database.ConnectionString(mssqlServer.FullyQualifiedDomainName, Database.DatabaseName(containerAppName))
-                        }
-                    }
-                }
-            }
-        });
+                            {
+                                "ConnectionStrings__DefaultConnection",
+                                Database.ConnectionString(mssqlServer.FullyQualifiedDomainName, Database.DatabaseName(containerAppName))
+                            },
+                        },
+                    },
+                },
+            });
+        }
     }
 }

@@ -1,19 +1,23 @@
-﻿namespace DayCare.Azure.Model;
-
-internal class AzureContext
+﻿namespace DayCare.Azure.Model
 {
-    private Node _node;
+    using global::Constructs;
 
-    public string SubscriptionId => Get("subscriptionId");
-    public string TenantId => Get("tenantId");
-
-    public AzureContext(Construct scope)
+    internal class AzureContext
     {
-        _node = scope.Node;
-    }
+        private readonly Node node;
 
-    private string Get(string key)
-    {
-        return (string)_node.TryGetContext(key);
+        public AzureContext(Construct scope)
+        {
+            this.node = scope.Node;
+        }
+
+        public string SubscriptionId => this.Get("subscriptionId");
+
+        public string TenantId => this.Get("tenantId");
+
+        private string Get(string key)
+        {
+            return (string)this.node.TryGetContext(key);
+        }
     }
 }

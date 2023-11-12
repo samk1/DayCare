@@ -1,54 +1,53 @@
-using DayCare.Azure.Constructs;
-using DayCare.Azure.Constructs.Data;
-using DayCare.Azure.Model;
-using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermMssqlServer;
-
-namespace DayCare.Azure.Stacks;
-
-class ApplicationStack : BaseAzureStack
+namespace DayCare.Azure.Stacks
 {
-    public ApplicationStack(
-        Construct scope, 
-        string containerImage, 
-        string containerAppName
-    ) : base(scope, "applicationStack", "DayCare-Application")
+    using System.Collections.Generic;
+    using DayCare.Azure.Constructs;
+    using DayCare.Azure.Constructs.Data;
+    using DayCare.Azure.Model;
+    using global::Constructs;
+    using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermMssqlServer;
+
+    internal class ApplicationStack : BaseAzureStack
     {
-        var resourceGroup = new ResourceGroup(
-            scope: this
-        );
-
-        var mssqlServer = new DataAzurermMssqlServer(this, "mssql-server", new DataAzurermMssqlServerConfig
+        public ApplicationStack(
+            Construct scope,
+            string containerImage,
+            string containerAppName)
+            : base(scope, "applicationStack", "DayCare-Application")
         {
-            Name = Database.ServerName(containerAppName),
-            ResourceGroupName = resourceGroup.Name,
-        });
+            var resourceGroup = new ResourceGroup(
+                scope: this);
 
-        var webapp = new WebApp(
-            scope: this,
-            appName: containerAppName,
-            resourceGroup: resourceGroup,
-            spec: new ContainerSpec(
-                image: containerImage,
-                containerRegistry: new ContainerRegistry(this),
-                environmentVariables: new Dictionary<string, string>
-                {
-                    { 
-                        "ConnectionStrings__DefaultConnection", 
-                        Database.ConnectionString(mssqlServer.FullyQualifiedDomainName, Database.DatabaseName(containerAppName)) 
-                    },
-                    { "ASPNETCORE_ENVIRONMENT", "Development" },
-                }
-            )
-        );
+            var mssqlServer = new DataAzurermMssqlServer(this, "mssql-server", new DataAzurermMssqlServerConfig
+            {
+                Name = Database.ServerName(containerAppName),
+                ResourceGroupName = resourceGroup.Name,
+            });
 
-        _ = new DatabaseAccess(
-            scope: this,
-            mssqlServer: mssqlServer,
-            managedIdentityName: webapp.ContainerAppName,
-            appName: containerAppName,
-            resourceGroup: resourceGroup,
-            id: "container-app-database-access",
-            roles: new[] { "db_datareader", "db_datawriter" }
-        );
+            var webapp = new WebApp(
+                scope: this,
+                appName: containerAppName,
+                resourceGroup: resourceGroup,
+                spec: new ContainerSpec(
+                    image: containerImage,
+                    containerRegistry: new ContainerRegistry(this),
+                    environmentVariables: new Dictionary<string, string>
+                    {
+                        {
+                            "ConnectionStrings__DefaultConnection",
+                            Database.ConnectionString(mssqlServer.FullyQualifiedDomainName, Database.DatabaseName(containerAppName))
+                        },
+                        { "ASPNETCORE_ENVIRONMENT", "Development" },
+                    }));
+
+            _ = new DatabaseAccess(
+                scope: this,
+                mssqlServer: mssqlServer,
+                managedIdentityName: webapp.ContainerAppName,
+                appName: containerAppName,
+                resourceGroup: resourceGroup,
+                id: "container-app-database-access",
+                roles: new[] { "db_datareader", "db_datawriter" });
+        }
     }
 }

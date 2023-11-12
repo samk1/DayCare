@@ -1,24 +1,29 @@
-﻿using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermContainerRegistry;
-
-namespace DayCare.Azure.Constructs.Data;
-
-internal class ContainerRegistry : Construct
+﻿namespace DayCare.Azure.Constructs.Data
 {
-    private DataAzurermContainerRegistry _dataAzurermContainerRegistry;
+    using System.Collections.Generic;
+    using global::Constructs;
+    using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermContainerRegistry;
 
-    public string AdminUsername => _dataAzurermContainerRegistry.AdminUsername;
-    public string AdminPassword => _dataAzurermContainerRegistry.AdminPassword;
-    public string LoginServer => _dataAzurermContainerRegistry.LoginServer;
-
-
-    public ContainerRegistry(Construct scope) : base(scope, "container-registry")
+    internal class ContainerRegistry : Construct
     {
-        var containerRegistryContext = (Dictionary<string, object>)scope.Node.TryGetContext("containerRegistry");
+        private readonly DataAzurermContainerRegistry dataAzurermContainerRegistry;
 
-        _dataAzurermContainerRegistry = new DataAzurermContainerRegistry(this, "container-registry", new DataAzurermContainerRegistryConfig
+        public ContainerRegistry(Construct scope)
+            : base(scope, "container-registry")
         {
-            Name = (string)containerRegistryContext["name"],
-            ResourceGroupName = (string)containerRegistryContext["resourceGroupName"],
-        });
+            var containerRegistryContext = (Dictionary<string, object>)scope.Node.TryGetContext("containerRegistry");
+
+            this.dataAzurermContainerRegistry = new DataAzurermContainerRegistry(this, "container-registry", new DataAzurermContainerRegistryConfig
+            {
+                Name = (string)containerRegistryContext["name"],
+                ResourceGroupName = (string)containerRegistryContext["resourceGroupName"],
+            });
+        }
+
+        public string AdminUsername => this.dataAzurermContainerRegistry.AdminUsername;
+
+        public string AdminPassword => this.dataAzurermContainerRegistry.AdminPassword;
+
+        public string LoginServer => this.dataAzurermContainerRegistry.LoginServer;
     }
 }

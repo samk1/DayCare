@@ -4,6 +4,15 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <GenerateProgramFile>false</GenerateProgramFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;SA1633</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;SA1633</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,5 +40,4 @@
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties cdktf_1json__JsonSchema="cd" /></VisualStudio></ProjectExtensions>
-
 </Project>
