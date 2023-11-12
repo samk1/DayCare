@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using DayCare.Azure.Constructs.Data;
+    using DayCare.Azure.Model;
     using global::Constructs;
     using HashiCorp.Cdktf;
     using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermMssqlServer;
