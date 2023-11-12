@@ -15,11 +15,9 @@
             string containerAppName)
             : base(scope, "infrastructureStack", "DayCare-Infrastructure")
         {
-            var keyVaultSecrets = new KeyVaultSecrets(
-                scope: this);
+            var keyVaultSecrets = new KeyVaultSecrets(this);
 
-            var resourceGroup = new ResourceGroup(
-                scope: this);
+            var resourceGroup = ResourceGroup.FindOrCreate(this);
 
             var directoryReadersGroupId = (string)scope.Node.TryGetContext("directoryReadersGroupId");
 

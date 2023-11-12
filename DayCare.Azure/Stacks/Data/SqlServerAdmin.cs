@@ -9,7 +9,7 @@
 
         public SqlServerAdmin(Construct scope, string appName)
         {
-            var resourceGroup = new ResourceGroup(scope);
+            var resourceGroup = ResourceGroup.FindOrCreate(scope);
             var name = Name(appName);
 
             this.dataAzurermUserAssignedIdentity = new DataAzurermUserAssignedIdentity(scope, "database-admin", new DataAzurermUserAssignedIdentityConfig

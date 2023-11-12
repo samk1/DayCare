@@ -15,7 +15,7 @@
             string containerImage)
             : base(scope, "migrationsStack", "DayCare-Migrations")
         {
-            var resourceGroup = new ResourceGroup(this);
+            var resourceGroup = ResourceGroup.FindOrCreate(this);
 
             var containerRegistry = new ContainerRegistry(this);
 
@@ -26,7 +26,7 @@
                 Name = $"{containerAppName}-migration-identity",
             });
 
-            var sqlServer = new SqlServer(this, containerAppName);
+            var sqlServer = SqlServer.FindOrCreate(this, containerAppName);
 
             var databaseAccess = DatabaseAccess.CreateDeploymentScript(
                 this,

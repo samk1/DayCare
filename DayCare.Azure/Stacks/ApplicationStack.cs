@@ -16,10 +16,8 @@ namespace DayCare.Azure.Stacks
             string containerAppName)
             : base(scope, "applicationStack", "DayCare-Application")
         {
-            var resourceGroup = new ResourceGroup(
-                scope: this);
-
-            var sqlServer = new SqlServer(this, containerAppName);
+            var resourceGroup = ResourceGroup.FindOrCreate(this);
+            var sqlServer = SqlServer.FindOrCreate(this, containerAppName);
 
             var containerRegistry = new ContainerRegistry(this);
 

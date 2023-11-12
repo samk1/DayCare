@@ -13,9 +13,9 @@
             string managedIdentityName,
             string[] roles)
         {
-            var resourceGroup = new ResourceGroup(scope);
+            var resourceGroup = ResourceGroup.FindOrCreate(scope);
             var sqlServerAdmin = new SqlServerAdmin(scope, containerAppName);
-            var sqlServer = new SqlServer(scope, containerAppName);
+            var sqlServer = SqlServer.FindOrCreate(scope, containerAppName);
 
             var parameters = new Dictionary<string, string>
             {
