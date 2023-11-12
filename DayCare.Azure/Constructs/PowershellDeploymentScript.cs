@@ -8,9 +8,9 @@ namespace DayCare.Azure.Constructs
 {
     internal class PowershellDeploymentScript : Construct, ITerraformDependable
     {
-        private ResourceDeploymentScriptAzurePowerShell resourceDeploymentScriptAzurePowerShell;
+        private ResourceDeploymentScriptAzurePowerShell _resourceDeploymentScriptAzurePowerShell;
 
-        public ITerraformDependable Dependable => resourceDeploymentScriptAzurePowerShell;
+        public ITerraformDependable Dependable => _resourceDeploymentScriptAzurePowerShell;
 
         public PowershellDeploymentScript(
             Construct scope, 
@@ -27,7 +27,7 @@ namespace DayCare.Azure.Constructs
                 arguments.Add($"-{parameter.Key} '{parameter.Value}'");
             }
 
-            resourceDeploymentScriptAzurePowerShell = new ResourceDeploymentScriptAzurePowerShell(
+            _resourceDeploymentScriptAzurePowerShell = new ResourceDeploymentScriptAzurePowerShell(
                 this,
                 $"{name}-deployment-script-resource",
                 new ResourceDeploymentScriptAzurePowerShellConfig
@@ -50,6 +50,6 @@ namespace DayCare.Azure.Constructs
             );
         }
 
-        public string Fqn => resourceDeploymentScriptAzurePowerShell.Fqn;
+        public string Fqn => _resourceDeploymentScriptAzurePowerShell.Fqn;
     }
 }

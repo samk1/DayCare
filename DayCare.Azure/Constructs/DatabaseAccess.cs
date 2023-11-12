@@ -15,8 +15,8 @@ namespace DayCare.Azure.Constructs
 {
     internal class DatabaseAccess : Construct
     {
-        private PowershellDeploymentScript powershellDeploymentScript;
-        public ITerraformDependable Dependable => powershellDeploymentScript.Dependable;
+        private PowershellDeploymentScript _powershellDeploymentScript;
+        public ITerraformDependable Dependable => _powershellDeploymentScript.Dependable;
 
         public DatabaseAccess(
             Construct scope, 
@@ -35,7 +35,7 @@ namespace DayCare.Azure.Constructs
             });
 
 
-            powershellDeploymentScript = new PowershellDeploymentScript(
+            _powershellDeploymentScript = new PowershellDeploymentScript(
                 this,
                 name: $"{id}-create-database-user-script",
                 embeddedResourceName: "DayCare.Azure.Scripts.CreateDatabaseUser.ps1",

@@ -9,7 +9,7 @@ namespace MyCompany.MyApp{
     public class TestProgram{
         
         [Fact]
-        public void myAppTest(){
+        public void MyAppTest(){
             Assert.True(true);
         }
 

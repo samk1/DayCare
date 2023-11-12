@@ -5,16 +5,16 @@ namespace DayCare.Azure.Constructs.Data
 {
     internal class ResourceGroup : Construct
     {
-        private DataAzurermResourceGroup DataAzurermResourceGroup;
+        private DataAzurermResourceGroup _dataAzurermResourceGroup;
 
-        public string Name => DataAzurermResourceGroup.Name;
-        public string Location => DataAzurermResourceGroup.Location;
+        public string Name => _dataAzurermResourceGroup.Name;
+        public string Location => _dataAzurermResourceGroup.Location;
 
         public ResourceGroup(Construct scope) : base(scope, "resource-group")
         {
             var resourceGroupName = (string)scope.Node.TryGetContext("resourceGroupName");
 
-            DataAzurermResourceGroup = new DataAzurermResourceGroup(this, "resource-group", new DataAzurermResourceGroupConfig
+            _dataAzurermResourceGroup = new DataAzurermResourceGroup(this, "resource-group", new DataAzurermResourceGroupConfig
             {
                 Name = resourceGroupName,
             });

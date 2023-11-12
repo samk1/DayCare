@@ -8,8 +8,8 @@ namespace DayCare.Azure.Constructs
 {
     internal class WebApp : Construct
     {
-        private ContainerApp ContainerApp;
-        public string ContainerAppName => ContainerApp.Name;
+        private ContainerApp _containerApp;
+        public string ContainerAppName => _containerApp.Name;
 
         public WebApp(
             Construct scope,
@@ -29,7 +29,7 @@ namespace DayCare.Azure.Constructs
                 }
             );
 
-            ContainerApp = new ContainerApp(this, $"{appName}-container-app", new ContainerAppConfig
+            _containerApp = new ContainerApp(this, $"{appName}-container-app", new ContainerAppConfig
             {
                 Name = $"{appName}-container-app",
                 ResourceGroupName = resourceGroup.Name,

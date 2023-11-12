@@ -6,18 +6,18 @@ namespace DayCare.Azure.Constructs.Data
 {
     internal class ContainerRegistry : Construct
     {
-        private DataAzurermContainerRegistry DataAzurermContainerRegistry;
+        private DataAzurermContainerRegistry _dataAzurermContainerRegistry;
 
-        public string AdminUsername => DataAzurermContainerRegistry.AdminUsername;
-        public string AdminPassword => DataAzurermContainerRegistry.AdminPassword;
-        public string LoginServer => DataAzurermContainerRegistry.LoginServer;
+        public string AdminUsername => _dataAzurermContainerRegistry.AdminUsername;
+        public string AdminPassword => _dataAzurermContainerRegistry.AdminPassword;
+        public string LoginServer => _dataAzurermContainerRegistry.LoginServer;
 
 
         public ContainerRegistry(Construct scope) : base(scope, "container-registry")
         {
             var containerRegistryContext = (Dictionary<string, object>)scope.Node.TryGetContext("containerRegistry");
 
-            DataAzurermContainerRegistry = new DataAzurermContainerRegistry(this, "container-registry", new DataAzurermContainerRegistryConfig
+            _dataAzurermContainerRegistry = new DataAzurermContainerRegistry(this, "container-registry", new DataAzurermContainerRegistryConfig
             {
                 Name = (string)containerRegistryContext["name"],
                 ResourceGroupName = (string)containerRegistryContext["resourceGroupName"],

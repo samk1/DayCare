@@ -19,10 +19,10 @@ namespace DayCare.Azure.Constructs
             return $"Server=tcp:{serverName},1433;Initial Catalog={databaseName};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=\"Active Directory Default\";";
         }
 
-        private MssqlServer MssqlServer;
-        private MssqlDatabase MssqlDatabase;
-        private UserAssignedIdentity AdminIdentity;
-        private ResourceGroup ResourceGroup;
+        private MssqlServer _mssqlServer;
+        private MssqlDatabase _mssqlDatabase;
+        private UserAssignedIdentity _adminIdentity;
+        private ResourceGroup _resourceGroup;
 
         public Database(
             Construct scope, 
@@ -32,16 +32,16 @@ namespace DayCare.Azure.Constructs
             string directoryReadersGroupId
         ) : base(scope, "Database")
         {
-            ResourceGroup = resourceGroup;
+            _resourceGroup = resourceGroup;
 
-            AdminIdentity = new UserAssignedIdentity(this, $"sql-server-entra-admin", new UserAssignedIdentityConfig
+            _adminIdentity = new UserAssignedIdentity(this, $"sql-server-entra-admin", new UserAssignedIdentityConfig
             {
                 Location = resourceGroup.Location,
                 ResourceGroupName = resourceGroup.Name,
                 Name = AdminIdentityName(appName),
             });
 
-            MssqlServer = new MssqlServer(this, "sql-server", new MssqlServerConfig
+            _mssqlServer = new MssqlServer(this, "sql-server", new MssqlServerConfig
             {
                 Name = ServerName(appName),
                 ResourceGroupName = resourceGroup.Name,
@@ -53,7 +53,7 @@ namespace DayCare.Azure.Constructs
                 {
                     AzureadAuthenticationOnly = true,
                     LoginUsername = "azuread-sqladmin",
-                    ObjectId = AdminIdentity.PrincipalId,
+                    ObjectId = _adminIdentity.PrincipalId,
                 },
                 Identity = new MssqlServerIdentity
                 {
@@ -64,20 +64,20 @@ namespace DayCare.Azure.Constructs
             new GroupMember(this, "sql-server-entra-admin-directory-readers-group-member", new GroupMemberConfig
             {
                 GroupObjectId = directoryReadersGroupId,
-                MemberObjectId = MssqlServer.Identity.PrincipalId,
+                MemberObjectId = _mssqlServer.Identity.PrincipalId,
             });
 
-            MssqlDatabase = new MssqlDatabase(this, "sql-database", new MssqlDatabaseConfig
+            _mssqlDatabase = new MssqlDatabase(this, "sql-database", new MssqlDatabaseConfig
             {
                 Name = DatabaseName(appName),
-                ServerId = MssqlServer.Id,
+                ServerId = _mssqlServer.Id,
                 Collation = "SQL_Latin1_General_CP1_CI_AS",
             });
 
             new MssqlFirewallRule(this, "sql-firewall-rule", new MssqlFirewallRuleConfig
             {
                 Name = "AllowAzureServicesAndResourcesToAccessThisServer",
-                ServerId = MssqlServer.Id,
+                ServerId = _mssqlServer.Id,
                 StartIpAddress = "0.0.0.0",
                 EndIpAddress = "0.0.0.0"
             });

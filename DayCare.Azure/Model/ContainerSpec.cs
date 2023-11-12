@@ -6,13 +6,13 @@ namespace DayCare.Azure.Model
 {
     public class ContainerSpec
     {
-        private ContainerRegistry ContainerRegistry;
+        private ContainerRegistry _containerRegistry;
 
         public string Image { get; }
         public Dictionary<string, string> EnvironmentVariables { get; }
-        public string ContainerRegistryPassword => ContainerRegistry.AdminPassword;
-        public string ContainerRegistryServer => ContainerRegistry.LoginServer;
-        public string ContainerRegistryUsername => ContainerRegistry.AdminUsername;
+        public string ContainerRegistryPassword => _containerRegistry.AdminPassword;
+        public string ContainerRegistryServer => _containerRegistry.LoginServer;
+        public string ContainerRegistryUsername => _containerRegistry.AdminUsername;
 
         internal ContainerSpec(
             string image, 
@@ -22,7 +22,7 @@ namespace DayCare.Azure.Model
         {
             Image = image;
             EnvironmentVariables = environmentVariables;
-            ContainerRegistry = containerRegistry;
+            _containerRegistry = containerRegistry;
         }
 
         internal ContainerAppTemplateContainerEnv[] BuildEnvironmentVariables()
