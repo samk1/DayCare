@@ -1,6 +1,5 @@
 ﻿using DayCare.Azure.Constructs.Data;
 using HashiCorp.Cdktf.Providers.Azurerm.ContainerApp;
-using System.Collections.Generic;
 
 namespace DayCare.Azure.Model
 {

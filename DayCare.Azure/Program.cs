@@ -1,9 +1,5 @@
 using System;
 using DayCare.Azure;
-using DayCare.Azure.Model;
-using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Azuread.Provider;
-using HashiCorp.Cdktf.Providers.Azurerm.Provider;
 
 namespace MyCompany.MyApp
 {

@@ -1,7 +1,4 @@
-﻿using Constructs;
-using HashiCorp.Cdktf;
-
-namespace DayCare.Azure.Model
+﻿namespace DayCare.Azure.Model
 {
     internal class AzureContext
     {

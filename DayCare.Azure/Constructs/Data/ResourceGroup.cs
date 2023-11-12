@@ -1,5 +1,4 @@
-﻿using Constructs;
-using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermResourceGroup;
+﻿using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermResourceGroup;
 
 namespace DayCare.Azure.Constructs.Data
 {

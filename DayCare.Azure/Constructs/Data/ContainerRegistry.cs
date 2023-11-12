@@ -1,6 +1,4 @@
-﻿using Constructs;
-using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermContainerRegistry;
-using System.Collections.Generic;
+﻿using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermContainerRegistry;
 
 namespace DayCare.Azure.Constructs.Data
 {

@@ -1,7 +1,4 @@
 using Xunit;
-using HashiCorp.Cdktf;
-using System;
-using System.Collections.Generic;
 
 namespace MyCompany.MyApp{
     // The tests below are example tests, you can find more information at

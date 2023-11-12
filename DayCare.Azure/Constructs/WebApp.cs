@@ -1,5 +1,4 @@
-﻿using Constructs;
-using DayCare.Azure.Constructs.Data;
+﻿using DayCare.Azure.Constructs.Data;
 using DayCare.Azure.Model;
 using HashiCorp.Cdktf.Providers.Azurerm.ContainerApp;
 using HashiCorp.Cdktf.Providers.Azurerm.ContainerAppEnvironment;
