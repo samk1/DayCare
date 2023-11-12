@@ -1,13 +1,12 @@
 namespace DayCare.Azure.Stacks
 {
     using System.Collections.Generic;
-    using DayCare.Azure.Constructs;
-    using DayCare.Azure.Constructs.Data;
-    using DayCare.Azure.Model;
+    using DayCare.Azure.Stacks.Data;
+    using DayCare.Azure.Stacks.Model;
     using global::Constructs;
     using HashiCorp.Cdktf.Providers.Azurerm.ContainerApp;
     using HashiCorp.Cdktf.Providers.Azurerm.ContainerAppEnvironment;
-    using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermMssqlServer;
+    using HashiCorp.Cdktf.Providers.Azurerm.UserAssignedIdentity;
 
     internal class ApplicationStack : BaseAzureStack
     {
@@ -20,11 +19,7 @@ namespace DayCare.Azure.Stacks
             var resourceGroup = new ResourceGroup(
                 scope: this);
 
-            var mssqlServer = new DataAzurermMssqlServer(this, "mssql-server", new DataAzurermMssqlServerConfig
-            {
-                Name = Database.ServerName(containerAppName),
-                ResourceGroupName = resourceGroup.Name,
-            });
+            var sqlServer = new SqlServer(this, containerAppName);
 
             var containerRegistry = new ContainerRegistry(this);
 
@@ -38,12 +33,26 @@ namespace DayCare.Azure.Stacks
                     Location = resourceGroup.Location,
                 });
 
-            var containerApp = new ContainerApp(this, $"{containerAppName}-container-app", new ContainerAppConfig
+            var containerAppIndentity = new UserAssignedIdentity(this, $"{containerAppName}-application-identity", new UserAssignedIdentityConfig()
+            {
+                Name = $"{containerAppName}-application-identity",
+                ResourceGroupName = resourceGroup.Name,
+                Location = resourceGroup.Location,
+            });
+
+            var databaseAccess = DatabaseAccess.CreateDeploymentScript(
+                this,
+                containerAppName,
+                containerAppIndentity.Name,
+                roles: new[] { "db_datareader", "db_datawriter" });
+
+            _ = new ContainerApp(this, $"{containerAppName}-container-app", new ContainerAppConfig
             {
                 Name = $"{containerAppName}-container-app",
                 ResourceGroupName = resourceGroup.Name,
                 ContainerAppEnvironmentId = containerAppEnvironment.Id,
                 RevisionMode = "Multiple",
+                DependsOn = new[] { databaseAccess },
                 Identity = new ContainerAppIdentity
                 {
                     Type = "SystemAssigned",
@@ -95,7 +104,7 @@ namespace DayCare.Azure.Stacks
                                 {
                                     {
                                         "ConnectionStrings__DefaultConnection",
-                                        Database.ConnectionString(mssqlServer.FullyQualifiedDomainName, Database.DatabaseName(containerAppName))
+                                        sqlServer.ApplicationDatabaseConnectionString
                                     },
                                     { "ASPNETCORE_ENVIRONMENT", "Development" },
                                 }),
@@ -103,15 +112,6 @@ namespace DayCare.Azure.Stacks
                     },
                 },
             });
-
-            _ = new DatabaseAccess(
-                scope: this,
-                mssqlServer: mssqlServer,
-                managedIdentityName: containerApp.Name,
-                appName: containerAppName,
-                resourceGroup: resourceGroup,
-                id: "container-app-database-access",
-                roles: new[] { "db_datareader", "db_datawriter" });
         }
     }
 }

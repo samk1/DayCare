@@ -1,4 +1,4 @@
-﻿namespace DayCare.Azure.Constructs.Data
+﻿namespace DayCare.Azure.Stacks.Data
 {
     using global::Constructs;
     using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermResourceGroup;

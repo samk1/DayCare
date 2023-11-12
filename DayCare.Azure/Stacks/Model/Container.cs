@@ -1,4 +1,4 @@
-﻿namespace DayCare.Azure.Model
+﻿namespace DayCare.Azure.Stacks.Model
 {
     using System.Collections.Generic;
     using HashiCorp.Cdktf.Providers.Azurerm.ContainerApp;

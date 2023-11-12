@@ -1,6 +1,6 @@
-﻿namespace DayCare.Azure.Model
+﻿namespace DayCare.Azure.Stacks.Model
 {
-    using global::Constructs;
+    using Constructs;
 
     internal class AzureContext
     {

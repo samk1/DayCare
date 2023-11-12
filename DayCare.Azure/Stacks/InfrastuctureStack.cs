@@ -1,8 +1,6 @@
 ﻿namespace DayCare.Azure.Stacks
 {
-    using DayCare.Azure.Constructs;
-    using DayCare.Azure.Constructs.Data;
-    using DayCare.Azure.Model;
+    using DayCare.Azure.Stacks.Data;
     using global::Constructs;
     using HashiCorp.Cdktf.Providers.Azuread.GroupMember;
     using HashiCorp.Cdktf.Providers.Azurerm.MssqlDatabase;
@@ -29,12 +27,12 @@
             {
                 Location = resourceGroup.Location,
                 ResourceGroupName = resourceGroup.Name,
-                Name = Database.AdminIdentityName(containerAppName),
+                Name = SqlServerAdmin.Name(containerAppName),
             });
 
             var mssqlServer = new MssqlServer(this, "sql-server", new MssqlServerConfig
             {
-                Name = Database.ServerName(containerAppName),
+                Name = SqlServer.ServerName(containerAppName),
                 ResourceGroupName = resourceGroup.Name,
                 Location = resourceGroup.Location,
                 Version = "12.0",
@@ -60,7 +58,7 @@
 
             _ = new MssqlDatabase(this, "sql-database", new MssqlDatabaseConfig
             {
-                Name = Database.DatabaseName(containerAppName),
+                Name = SqlServer.DatabaseName(containerAppName),
                 ServerId = mssqlServer.Id,
                 Collation = "SQL_Latin1_General_CP1_CI_AS",
             });

@@ -1,6 +1,6 @@
 ﻿namespace DayCare.Azure.Stacks
 {
-    using DayCare.Azure.Model;
+    using DayCare.Azure.Stacks.Model;
     using global::Constructs;
     using HashiCorp.Cdktf;
     using HashiCorp.Cdktf.Providers.Azuread.Provider;

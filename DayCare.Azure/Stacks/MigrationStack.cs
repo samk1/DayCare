@@ -1,12 +1,10 @@
 ﻿namespace DayCare.Azure.Stacks
 {
     using System.Collections.Generic;
-    using DayCare.Azure.Constructs;
-    using DayCare.Azure.Constructs.Data;
-    using DayCare.Azure.Model;
+    using DayCare.Azure.Stacks.Data;
+    using DayCare.Azure.Stacks.Model;
     using global::Constructs;
     using HashiCorp.Cdktf.Providers.Azurerm.ContainerGroup;
-    using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermMssqlServer;
     using HashiCorp.Cdktf.Providers.Azurerm.UserAssignedIdentity;
 
     internal class MigrationStack : BaseAzureStack
@@ -21,12 +19,6 @@
 
             var containerRegistry = new ContainerRegistry(this);
 
-            var mssqlServer = new DataAzurermMssqlServer(this, "mssql-server", new DataAzurermMssqlServerConfig
-            {
-                Name = Database.ServerName(containerAppName),
-                ResourceGroupName = resourceGroup.Name,
-            });
-
             var migrationsIdentity = new UserAssignedIdentity(this, $"{containerAppName}-migration-identity", new UserAssignedIdentityConfig
             {
                 ResourceGroupName = resourceGroup.Name,
@@ -34,13 +26,12 @@
                 Name = $"{containerAppName}-migration-identity",
             });
 
-            var databaseAccess = new DatabaseAccess(
+            var sqlServer = new SqlServer(this, containerAppName);
+
+            var databaseAccess = DatabaseAccess.CreateDeploymentScript(
                 this,
-                $"{containerAppName}-migration-database-access",
-                resourceGroup,
-                mssqlServer,
-                migrationsIdentity.Name,
                 containerAppName,
+                migrationsIdentity.Name,
                 roles: new[] { "db_owner" });
 
             _ = new ContainerGroup(this, $"{containerAppName}-migration-container-group", new ContainerGroupConfig
@@ -51,7 +42,7 @@
                 RestartPolicy = "Never",
                 OsType = "Linux",
                 IpAddressType = "None",
-                DependsOn = new[] { databaseAccess.Dependable },
+                DependsOn = new[] { databaseAccess },
                 Identity = new ContainerGroupIdentity
                 {
                     Type = "UserAssigned",
@@ -79,7 +70,7 @@
                         {
                             {
                                 "ConnectionStrings__DefaultConnection",
-                                Database.ConnectionString(mssqlServer.FullyQualifiedDomainName, Database.DatabaseName(containerAppName))
+                                sqlServer.ApplicationDatabaseConnectionString
                             },
                         },
                     },
