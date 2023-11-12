@@ -40,6 +40,7 @@ jobs:
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
         run: |
           cd DayCare.Azure
+          npm install -g cdktf-cli
           npx cdktf deploy --auto-approve --no-color infrastructureStack
           npx cdktf deploy --auto-approve --no-color migrationsStack
           npx cdktf deploy --auto-approve --no-color applicationStack
