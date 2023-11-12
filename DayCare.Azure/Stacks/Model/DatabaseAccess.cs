@@ -49,7 +49,6 @@
                         Type = "UserAssigned",
                         IdentityIds = new string[] { sqlServerAdmin.Id },
                     },
-                    ForceUpdateTag = System.Guid.NewGuid().ToString(),
                 });
         }
     }
