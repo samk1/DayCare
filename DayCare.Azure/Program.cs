@@ -7,7 +7,7 @@ namespace MyCompany.MyApp
     {
         public static void Main(string[] args)
         {
-            App app = new App();
+            var app = new App();
 
             _ = new InfrastuctureStack(
                 scope: app,
