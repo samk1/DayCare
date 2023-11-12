@@ -20,7 +20,7 @@ namespace MyCompany.MyApp
                 containerAppName: "daycare-web"
             );
 
-            _ = new MainStack(
+            _ = new ApplicationStack(
                 scope: app,
                 containerImage: Environment.GetEnvironmentVariable("CONTAINER_APP_IMAGE"),
                 containerAppName: "daycare-web"

@@ -6,10 +6,10 @@ using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermMssqlServer;
 
 namespace DayCare.Azure
 {
-    class MainStack : BaseAzureStack
+    class ApplicationStack : BaseAzureStack
     {
 
-        public MainStack(
+        public ApplicationStack(
             Construct scope, 
             string containerImage, 
             string containerAppName
