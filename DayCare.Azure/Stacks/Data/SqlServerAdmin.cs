@@ -19,7 +19,7 @@
             });
         }
 
-        public string PrincipalId => this.dataAzurermUserAssignedIdentity.PrincipalId;
+        public string Id => this.dataAzurermUserAssignedIdentity.Id;
 
         public static string Name(string appName) => $"{appName}-sql-server-admin";
     }
