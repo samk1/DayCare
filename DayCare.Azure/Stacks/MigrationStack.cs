@@ -42,7 +42,7 @@ namespace DayCare.Azure
                 roles: new[] { "db_owner" }
             );
 
-            new ContainerGroup(this, $"{containerAppName}-migration-container-group", new ContainerGroupConfig
+            _ = new ContainerGroup(this, $"{containerAppName}-migration-container-group", new ContainerGroupConfig
             {
                 Name = $"{containerAppName}-database-migrations-container-group",
                 ResourceGroupName = resourceGroup.Name,
@@ -50,7 +50,7 @@ namespace DayCare.Azure
                 RestartPolicy = "Never",
                 OsType = "Linux",
                 IpAddressType = "None",
-                DependsOn = new [] { databaseAccess.Dependable },
+                DependsOn = new[] { databaseAccess.Dependable },
                 Identity = new ContainerGroupIdentity
                 {
                     Type = "UserAssigned",

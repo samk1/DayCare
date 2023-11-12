@@ -60,7 +60,7 @@ namespace DayCare.Azure.Constructs
                 }
             });
 
-            new GroupMember(this, "sql-server-entra-admin-directory-readers-group-member", new GroupMemberConfig
+            _ = new GroupMember(this, "sql-server-entra-admin-directory-readers-group-member", new GroupMemberConfig
             {
                 GroupObjectId = directoryReadersGroupId,
                 MemberObjectId = _mssqlServer.Identity.PrincipalId,
@@ -73,7 +73,7 @@ namespace DayCare.Azure.Constructs
                 Collation = "SQL_Latin1_General_CP1_CI_AS",
             });
 
-            new MssqlFirewallRule(this, "sql-firewall-rule", new MssqlFirewallRuleConfig
+            _ = new MssqlFirewallRule(this, "sql-firewall-rule", new MssqlFirewallRuleConfig
             {
                 Name = "AllowAzureServicesAndResourcesToAccessThisServer",
                 ServerId = _mssqlServer.Id,

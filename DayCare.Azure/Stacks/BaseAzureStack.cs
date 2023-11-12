@@ -10,14 +10,14 @@ namespace DayCare.Azure.Stacks
         {
             var context = new AzureContext(scope);
 
-            new CloudBackend(this, new CloudBackendConfig
+            _ = new CloudBackend(this, new CloudBackendConfig
             {
                 Hostname = "app.terraform.io",
                 Organization = "DayCare",
                 Workspaces = new NamedCloudWorkspace(workspace)
             });
 
-            new AzurermProvider(this, "azurerm", new AzurermProviderConfig
+            _ = new AzurermProvider(this, "azurerm", new AzurermProviderConfig
             {
                 Features = new AzurermProviderFeatures
                 {
@@ -27,7 +27,7 @@ namespace DayCare.Azure.Stacks
                 TenantId = context.TenantId,
             });
 
-            new AzureadProvider(this, "azuread", new AzureadProviderConfig
+            _ = new AzureadProvider(this, "azuread", new AzureadProviderConfig
             {
                 TenantId = context.TenantId,
             });

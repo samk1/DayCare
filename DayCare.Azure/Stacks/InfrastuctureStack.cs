@@ -19,7 +19,7 @@ namespace DayCare.Azure
                 scope: this
             );
 
-            new Database(
+            _ = new Database(
                 scope: this,
                 keyVaultSecrets: keyVaultSecrets,
                 appName: containerAppName,

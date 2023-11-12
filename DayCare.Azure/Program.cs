@@ -8,19 +8,19 @@ namespace MyCompany.MyApp
         public static void Main(string[] args)
         {
             App app = new App();
-            
-            new InfrastuctureStack(
+
+            _ = new InfrastuctureStack(
                 scope: app,
                 containerAppName: "daycare-web"
             );
 
-            new MigrationStack(
+            _ = new MigrationStack(
                 scope: app,
                 containerImage: Environment.GetEnvironmentVariable("CONTAINER_APP_IMAGE"),
                 containerAppName: "daycare-web"
             );
-            
-            new MainStack(
+
+            _ = new MainStack(
                 scope: app,
                 containerImage: Environment.GetEnvironmentVariable("CONTAINER_APP_IMAGE"),
                 containerAppName: "daycare-web"

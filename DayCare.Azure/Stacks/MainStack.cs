@@ -43,7 +43,7 @@ namespace DayCare.Azure
                 )
             );
 
-            new DatabaseAccess(
+            _ = new DatabaseAccess(
                 scope: this,
                 mssqlServer: mssqlServer,
                 managedIdentityName: webapp.ContainerAppName,
