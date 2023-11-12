@@ -1,32 +1,31 @@
 ﻿using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermKeyVault;
 using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermKeyVaultSecret;
 
-namespace DayCare.Azure.Constructs.Data
+namespace DayCare.Azure.Constructs.Data;
+
+internal class KeyVaultSecrets : Construct
 {
-    internal class KeyVaultSecrets : Construct
+    private DataAzurermKeyVault _dataAzurermKeyVault;
+
+    public KeyVaultSecrets(Construct scope) : base(scope, "keyvault-secrets")
     {
-        private DataAzurermKeyVault _dataAzurermKeyVault;
+        var keyVaultContext = (Dictionary<string, object>)scope.Node.TryGetContext("keyVault");
 
-        public KeyVaultSecrets(Construct scope) : base(scope, "keyvault-secrets")
+        _dataAzurermKeyVault = new DataAzurermKeyVault(this, "keyvault", new DataAzurermKeyVaultConfig
         {
-            var keyVaultContext = (Dictionary<string, object>)scope.Node.TryGetContext("keyVault");
+            Name = (string)keyVaultContext["name"],
+            ResourceGroupName = (string)keyVaultContext["resourceGroupName"],
+        });
+    }
 
-            _dataAzurermKeyVault = new DataAzurermKeyVault(this, "keyvault", new DataAzurermKeyVaultConfig
-            {
-                Name = (string)keyVaultContext["name"],
-                ResourceGroupName = (string)keyVaultContext["resourceGroupName"],
-            });
-        }
-
-        public string GetSecret(string secretName)
+    public string GetSecret(string secretName)
+    {
+        var secret = new DataAzurermKeyVaultSecret(this, secretName, new DataAzurermKeyVaultSecretConfig
         {
-            var secret = new DataAzurermKeyVaultSecret(this, secretName, new DataAzurermKeyVaultSecretConfig
-            {
-                Name = secretName,
-                KeyVaultId = _dataAzurermKeyVault.Id,
-            });
+            Name = secretName,
+            KeyVaultId = _dataAzurermKeyVault.Id,
+        });
 
-            return secret.Value;
-        }
+        return secret.Value;
     }
 }

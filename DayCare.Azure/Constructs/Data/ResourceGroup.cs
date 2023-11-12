@@ -1,22 +1,21 @@
 ﻿using HashiCorp.Cdktf.Providers.Azurerm.DataAzurermResourceGroup;
 
-namespace DayCare.Azure.Constructs.Data
+namespace DayCare.Azure.Constructs.Data;
+
+internal class ResourceGroup : Construct
 {
-    internal class ResourceGroup : Construct
+    private DataAzurermResourceGroup _dataAzurermResourceGroup;
+
+    public string Name => _dataAzurermResourceGroup.Name;
+    public string Location => _dataAzurermResourceGroup.Location;
+
+    public ResourceGroup(Construct scope) : base(scope, "resource-group")
     {
-        private DataAzurermResourceGroup _dataAzurermResourceGroup;
+        var resourceGroupName = (string)scope.Node.TryGetContext("resourceGroupName");
 
-        public string Name => _dataAzurermResourceGroup.Name;
-        public string Location => _dataAzurermResourceGroup.Location;
-
-        public ResourceGroup(Construct scope) : base(scope, "resource-group")
+        _dataAzurermResourceGroup = new DataAzurermResourceGroup(this, "resource-group", new DataAzurermResourceGroupConfig
         {
-            var resourceGroupName = (string)scope.Node.TryGetContext("resourceGroupName");
-
-            _dataAzurermResourceGroup = new DataAzurermResourceGroup(this, "resource-group", new DataAzurermResourceGroupConfig
-            {
-                Name = resourceGroupName,
-            });
-        }
+            Name = resourceGroupName,
+        });
     }
 }
