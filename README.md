@@ -17,7 +17,7 @@ All cloud infrastructure is defined and deployed as code. There are two layers o
 
 ---
 
-## ✨ Highlights for DevOps Recruiters
+## ✨ Highlights
 
 ### 1. Terraform CDK (CDKTF) Written in C#
 
